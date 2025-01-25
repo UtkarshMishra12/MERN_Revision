@@ -3,11 +3,12 @@ const router = express.Router();
 
 
 const {createComment} = require("../controller/commentController");
-const {createPost} = require("../controller/PostController");
+const {createPost, getPosts} = require("../controller/PostController");
 
 //Mapping Controller
 router.post("/comments/create", createComment);
-router.post("/post.create", createPost);
+router.post("/posts/create", createPost);
+router.get("/posts", getPosts);
 
 //export
 module.exports = router;

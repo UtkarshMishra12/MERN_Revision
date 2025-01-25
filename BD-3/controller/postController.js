@@ -1,6 +1,4 @@
 const Post = require("../models/postModel");
-const Like = require("../models/likeModel");
-const Comment = require("../models/commentModel");
 
 
 exports.createPost = async (req,res) =>{
@@ -21,6 +19,24 @@ exports.createPost = async (req,res) =>{
         res.status(500).json({
             success: false,
             message:"Error in creating Post",
+        })
+    }
+}
+
+exports.getPosts = async (req,res) => {
+    try{
+        const post = await Post.find();
+                    // .populates("likes").populates("comments").exec();
+        res.status(200).json({
+            success:true,
+            data: post,
+            message:"Fetched Post successfully"
+        })  
+    }
+    catch(err){
+        res.status(500).json({
+            success: false,
+            message:"Error in fetching Post",
         })
     }
 }
