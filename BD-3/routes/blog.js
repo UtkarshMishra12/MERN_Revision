@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 
-//Import Controller
-const {dummy} = require("../controller/commentController");
+const {createComment} = require("../controller/commentController");
+const {createPost} = require("../controller/PostController");
 
 //Mapping Controller
-router.get("/dummy", dummy);
+router.post("/comments/create", createComment);
+router.post("/post.create", createPost);
 
 //export
 module.exports = router;
