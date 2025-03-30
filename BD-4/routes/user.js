@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const User = require("../model/User");
 
 const { signUp, signIn } = require("../controller/Auth");
 const {auth, isStudent, isAdmin } = require("../middleware/auth")
@@ -27,6 +28,24 @@ router.get("/test", auth, (req, res) => {
         success: true,
         message: "Welcome to protected route for test",
     });
+});
+
+router.get("/getEmail", auth, async(req, res) => {
+    try{
+        const id = req.user.id;
+        const data = await User.findById(id);
+        res.status(200).json({
+            success: true,
+            data: data,
+            message: "Welcome to protected route for getEmail",
+        });
+    }
+    catch(error){
+        res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
 });
 
 module.exports = router;

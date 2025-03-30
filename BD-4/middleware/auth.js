@@ -4,8 +4,13 @@ const dotenv = require("dotenv").config();
 
 exports.auth = async (req, res, next) => {
     try{
-        const token = req.body.token ;
-        if(!token) {
+
+        console.log("cookie", req.cookies.token);
+        console.log("header", req.header("Authorization"));
+        console.log("body", req.body.token);
+
+        const token = req.body.token || req.header("Authorization").replace("Bearer", "") || req.cookies.token;
+        if(!token || token === "null") {
             return res.status(401).json({
                 success: false,
                 message: "Please login first | Token not found",

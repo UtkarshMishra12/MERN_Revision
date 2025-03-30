@@ -4,6 +4,8 @@ const app = express();
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;  
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 app.use(express.json());
 
 const userRouter = require("./routes/user");
