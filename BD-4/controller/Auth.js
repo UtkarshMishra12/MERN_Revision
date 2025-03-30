@@ -56,7 +56,7 @@ const signIn = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
@@ -78,15 +78,20 @@ const signIn = async (req, res) => {
         expiresIn: "2h",
       });
 
-      usrer.token = token;
+      user = user.toObject(); // Convert Mongoose document to plain object
+      user.token = token;
       user.password = undefined;
 
-      
+      const options ={
+        exppires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3Days
+        httpOnly: true,
+      }
 
-      return res.status(200).json({
+      res.cookie("token", token, options).status(200).json({
         success: true,
         message: "User signed in successfully",
         token,
+        user,
       });
 
     } 
@@ -96,14 +101,13 @@ const signIn = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      message: "User signed in successfully",
-    });
   } catch (error) {
-    return res.status(400).json({
-      message: error.message,
+    return res.status(500).json({
+      success:false,
+      message: "Error in Singin",
+      error: error.message,
     });
   }
-};
+}; 
 
 module.exports = { signUp, signIn };
