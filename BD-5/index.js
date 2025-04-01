@@ -5,13 +5,17 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+const fileupload = require("express-fileupload");
+app.use(fileupload());
 
 const dbConnect = require('./config/database');
 dbConnect();
 
-//const routes = require('./routes/file.js');
+const cloudinaryConnect = require('./config/cloudinary');
+cloudinaryConnect();
 
-//app.use("/api/v1", routes);
+const Upload = require('./routes/FileUpload');
+app.use("/api/v1/upload", Upload);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
