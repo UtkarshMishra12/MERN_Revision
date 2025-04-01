@@ -32,6 +32,7 @@ function isFileFormatSupported(fileFormat, supportedFormats) {
 
 async function uploadFileToCloudinary(file, folder){
     const options = {folder};
+    options.resource_type = "auto";
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
 
@@ -77,3 +78,44 @@ exports.imageUpload = async (req,res) =>{
     }
 }
 
+exports.videoUpload = async (req,res) =>{
+    try{
+        const {name,email, tags}= req.body;
+        console.log(name,tags,email);
+
+        const file=  req.files.videoFile;
+        console.log(file);
+
+        const supportedFormats = ["mp4", "mov"];
+        const fileFormat = file.name.split(".")[1].toLowerCase();
+
+        if(!isFileFormatSupported(fileFormat, supportedFormats)){
+            return res.status(400).json({
+                message: "Unsupported file format",
+                success: false,
+            });
+        }
+
+        //file format supported
+        const response = await uploadFileToCloudinary(file, "Mishra_Utkarsh_April");
+        console.log(response);
+
+        //save to db
+        const fileData = await File.create({
+            name,
+            email,
+            tags,
+            imageUrl: response.secure_url,
+        });
+
+        res.status(200).json({
+            message: "File Uploaded Successfully",
+            success: true,
+            videoUrl: response.secure_url,
+        });
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message: "Internal Server Error while uploading video"});
+    }
+}
